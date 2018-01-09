@@ -1,0 +1,25 @@
+{
+  "name": "expressjs-starter-kit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./start.js",
+    "watch": "nodemon ./start.js --ignore public/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "md5": "^2.2.1",
+    "mongoose": "^4.13.9",
+    "validator": "^9.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.10"
+  }
+}
