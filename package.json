@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./start.js",
-    "watch": "nodemon ./start.js --ignore public/"
+    "watch": "nodemon ./start.js --ignore public/",
+    "seed": "node ./seeds/seeder.js",
+    "seed:delete": "node ./seeds/seeder.js --delete"
   },
   "author": "",
   "license": "ISC",
