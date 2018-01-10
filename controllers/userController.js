@@ -35,24 +35,3 @@ exports.postAuthenticate = async (req, res) => {
         token: token
     })
 }
-
-exports.getAuthorize = async (req, res) => {
-
-    // check header or url parameters or post parameters for token
-    let token = req.body.token || req.query.token || req.headers['x-access-token']
-
-    // decode token
-    if (token) {
-
-        // verifies secret and checks exp
-        try {
-            let decoded = await jwt.verify(token, process.env.JWT_SECRET)
-            req.decoded = decoded
-            return res.json({ success: true, message: 'Enjoy your decoded!', decoded })
-        } catch (err) {
-            return res.json({ success: false, message: 'Failed to authenticate token.', error: err })
-        }
-    }
-
-    return res.json({ success: false, message: 'Not found token.' })
-}
