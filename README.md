@@ -2,6 +2,7 @@
 
 - Node.js / Express.js
 - MongoDb / Mongoose
+- JWT
 
 ---
 # HOW TO RUN
