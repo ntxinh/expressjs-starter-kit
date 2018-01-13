@@ -44,16 +44,17 @@ userSchema.virtual('gravatar').get(() => {
 userSchema.pre('save', async function (next) {
   try {
     if (!this.isModified('password')) {
-      return next() // skip it & stop this function from running
+      // Skip it & stop this function from running
+      return next()
     }
 
-    // generate a salt
+    // Generate a salt
     const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS))
 
-    // hash the password along with our new salt
+    // Hash the password along with our new salt
     const hash = await bcrypt.hash(this.password, salt)
 
-    // override the cleartext password with the hashed one
+    // Override the cleartext password with the hashed one
     this.password = hash
 
     return next()

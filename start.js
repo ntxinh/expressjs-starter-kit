@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-// import environmental variables from our variables.env file
+// Import environmental variables from our variables.env file
 require('dotenv').config({ path: 'variables.env' })
 
 // Connect to our Database and handle an bad connections
@@ -12,7 +12,7 @@ mongoose.connection.on('error', (err) => {
 
 // READY?! Let's go!
 
-// import all of our models
+// Import all of our models
 require('./models/User')
 
 // Start our app!

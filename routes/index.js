@@ -9,6 +9,7 @@ const { getAuthorize } = require('../middlewares/authMiddleware')
 router.get('/', (req, res) => res.json({ msg: 'Hello world' }))
 router.post('/api/authenticate', catchErrors(userController.postAuthenticate))
 router.post('/api/sign-up', catchErrors(userController.postSignUp))
+router.get('/api/confirm-sign-up', catchErrors(userController.getConfirmSignUp))
 
 // Middlewares
 router.use(getAuthorize)

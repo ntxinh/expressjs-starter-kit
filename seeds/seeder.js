@@ -7,10 +7,10 @@ const mongoose = require('mongoose')
 mongoose.connect(process.env.DATABASE, { useMongoClient: true })
 mongoose.Promise = global.Promise // Tell Mongoose to use ES6 promises
 
-// import all of our models - they need to be imported only once
+// Import all of our models - they need to be imported only once
 const User = require('../models/User')
 
-// password: 123456
+// Password: 123456
 const users = JSON.parse(fs.readFileSync(path.join(__dirname, '/users.json'), 'utf-8'))
 
 const deleteData = async () => {

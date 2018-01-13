@@ -11,28 +11,27 @@ exports.getUsers = async (req, res) => {
 }
 
 exports.postAuthenticate = async (req, res) => {
-
-  // get input data
+  // Get input data
   let email = req.body.email
   let password = req.body.password
 
-  // find the user
+  // Find the user
   const user = await User.findOne({ email: email })
 
-  // check if user exist
+  // Check if user exist
   if (!user) {
     return res.json({ success: false, message: 'Authentication failed. User not found.' })
   }
 
-  // check if password matches
+  // Check if password matches
   if (!await bcrypt.compare(password, user.password)) {
     return res.json({ success: false, message: 'Authentication failed. Wrong password.' })
   }
 
-  // create a token with only our given payload
+  // Create a token with only our given payload
   let token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-  // return the information including token as JSON
+  // Return the information including token as JSON
   return res.json({
     success: true,
     message: 'Enjoy your token!',
@@ -41,18 +40,18 @@ exports.postAuthenticate = async (req, res) => {
 }
 
 exports.postSignUp = async (req, res) => {
-
-  // get input data
+  // Get input data
   let name = req.body.name
   let email = req.body.email
   let password = req.body.password
 
-  // save the user
+  // Save the user
   const user = new User({ name, email, password })
   await user.save()
 
   // Send them an email with the token
-  const resetURL = `http://${req.headers.host}/`
+  const tokenConfirm = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '15h' })
+  const resetURL = `http://${req.headers.host}/confirm-sign-up?token=${tokenConfirm}`
   await mail.send({
     user,
     filename: 'confirm-sign-up',
@@ -65,4 +64,33 @@ exports.postSignUp = async (req, res) => {
     message: 'Sign up successfully!',
     user
   })
+}
+
+exports.getConfirmSignUp = async (req, res) => {
+  // Get input data
+  let token = req.query.token
+
+  // Decode token
+  if (token) {
+    // Verifies secret and checks exp
+    try {
+      let decoded = await jwt.verify(token, process.env.JWT_SECRET)
+      let email = decoded.email
+
+      // Enable user
+      let user = await User.findOne({ email })
+      user.enable = true
+      await user.save()
+
+      return res.json({
+        success: true,
+        message: 'Sign up successfully!',
+        user
+      })
+    } catch (err) {
+      return res.json({ error: err })
+    }
+  }
+
+  return res.json({ error: 'Not found token' })
 }
