@@ -9,6 +9,8 @@ exports.getUsers = async (req, res) => {
 }
 
 exports.postAuthenticate = async (req, res) => {
+
+    // get input data
     let email = req.body.email
     let password = req.body.password
 
@@ -33,5 +35,23 @@ exports.postAuthenticate = async (req, res) => {
         success: true,
         message: 'Enjoy your token!',
         token: `${process.env.JWT_TOKEN_TYPE} ${token}`
+    })
+}
+
+exports.postSignUp = async (req, res) => {
+
+    // get input data
+    let name = req.body.name
+    let email = req.body.email
+    let password = req.body.password
+
+    // save the user
+    const user = new User({ name, email, password })
+    await user.save()
+
+    return res.json({
+        success: true,
+        message: 'Sign up successfully!',
+        user
     })
 }

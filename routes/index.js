@@ -8,6 +8,7 @@ const { getAuthorize } = require('../middlewares/authMiddleware')
 // Unprotected routes
 router.get('/', (req, res) => res.json({ msg: 'Hello world' }))
 router.post('/api/authenticate', catchErrors(userController.postAuthenticate))
+router.post('/api/sign-up', catchErrors(userController.postSignUp))
 
 // Middlewares
 router.use(getAuthorize)
