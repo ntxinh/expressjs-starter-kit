@@ -6,60 +6,60 @@ const validator = require('validator')
 const bcrypt = require('bcrypt')
 
 const userSchema = new Schema({
-    email: {
-        type: String,
-        unique: true,
-        lowercase: true,
-        trim: true,
-        validate: {
-            isAsync: true,
-            validator: validator.isEmail,
-            message: 'Invalid Email Address'
-        },
-        required: 'Please Supply an email address'
+  email: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    validate: {
+      isAsync: true,
+      validator: validator.isEmail,
+      message: 'Invalid Email Address'
     },
-    password: {
-        type: String,
-        required: 'Please supply a password',
-        trim: true
-    },
-    name: {
-        type: String,
-        required: 'Please supply a name',
-        trim: true
-    },
-    resetPasswordToken: String,
-    resetPasswordExpires: Date,
-    hearts: [
-        { type: mongoose.Schema.ObjectId, ref: 'Store' }
-    ]
+    required: 'Please Supply an email address'
+  },
+  password: {
+    type: String,
+    required: 'Please supply a password',
+    trim: true
+  },
+  name: {
+    type: String,
+    required: 'Please supply a name',
+    trim: true
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+  hearts: [
+    { type: mongoose.Schema.ObjectId, ref: 'Store' }
+  ]
 })
 
 userSchema.virtual('gravatar').get(function () {
-    const hash = md5(this.email)
-    return `https://gravatar.com/avatar/${hash}?s=200`
+  const hash = md5(this.email)
+  return `https://gravatar.com/avatar/${hash}?s=200`
 })
 
 userSchema.pre('save', async function (next) {
-    try {
+  try {
 
-        if (!this.isModified('password')) {
-            return next() // skip it & stop this function from running
-        }
-
-        // generate a salt
-        const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS))
-
-        // hash the password along with our new salt
-        const hash = await bcrypt.hash(this.password, salt)
-
-        // override the cleartext password with the hashed one
-        this.password = hash
-        
-        return next()
-    } catch (e) {
-        return next(e)
+    if (!this.isModified('password')) {
+      return next() // skip it & stop this function from running
     }
+
+    // generate a salt
+    const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS))
+
+    // hash the password along with our new salt
+    const hash = await bcrypt.hash(this.password, salt)
+
+    // override the cleartext password with the hashed one
+    this.password = hash
+
+    return next()
+  } catch (e) {
+    return next(e)
+  }
 })
 
 module.exports = mongoose.model('User', userSchema)

@@ -1,4 +1,6 @@
-require('dotenv').config({ path: __dirname + '/../variables.env' })
+const path = require('path')
+
+require('dotenv').config({ path: path.join(__dirname, '../variables.env') })
 const fs = require('fs')
 
 const mongoose = require('mongoose')
@@ -9,21 +11,21 @@ mongoose.Promise = global.Promise // Tell Mongoose to use ES6 promises
 const User = require('../models/User')
 
 // password: 123456
-const users = JSON.parse(fs.readFileSync(__dirname + '/users.json', 'utf-8'))
+const users = JSON.parse(fs.readFileSync(path.join(__dirname, '/users.json'), 'utf-8'))
 
-async function deleteData() {
+async function deleteData () {
   console.log('😢😢 Goodbye Data...')
   await User.remove()
   console.log('Data Deleted. To load sample data, run\n\n\t npm run seed\n\n')
   process.exit()
 }
 
-async function loadData() {
+async function loadData () {
   try {
     await User.insertMany(users)
     console.log('👍👍👍👍👍👍👍👍 Done!')
     process.exit()
-  } catch(e) {
+  } catch (e) {
     console.log('\n👎👎👎👎👎👎👎👎 Error! The Error info is below but if you are importing sample data make sure to drop the existing database first with.\n\n\t npm run seed:delete\n\n\n')
     console.log(e)
     process.exit()

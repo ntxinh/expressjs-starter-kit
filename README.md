@@ -10,11 +10,18 @@
 - Copy `variables.env.sample` to `variables.env` & custom it
 
 ```bash
-$ npm start
+npm start
 
 // or
 
-$ npm run watch
+npm run watch
+```
+
+- Data sample:
+```bash
+npm run seed
+
+npm run seed:delete
 ```
 
 ---
