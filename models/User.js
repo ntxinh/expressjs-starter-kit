@@ -35,14 +35,13 @@ const userSchema = new Schema({
   ]
 })
 
-userSchema.virtual('gravatar').get(function () {
+userSchema.virtual('gravatar').get(() => {
   const hash = md5(this.email)
   return `https://gravatar.com/avatar/${hash}?s=200`
 })
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async (next) => {
   try {
-
     if (!this.isModified('password')) {
       return next() // skip it & stop this function from running
     }

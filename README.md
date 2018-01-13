@@ -3,6 +3,7 @@
 - Node.js / Express.js
 - MongoDb / Mongoose
 - JWT
+- [JavaScript Standard Style Guide](https://standardjs.com/)
 
 ---
 # HOW TO RUN
