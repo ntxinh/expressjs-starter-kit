@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const mail = require('../handlers/mail')
 
 const User = mongoose.model('User')
 
@@ -49,6 +50,15 @@ exports.postSignUp = async (req, res) => {
   // save the user
   const user = new User({ name, email, password })
   await user.save()
+
+  // Send them an email with the token
+  const resetURL = `http://${req.headers.host}/`
+  await mail.send({
+    user,
+    filename: 'confirm-sign-up',
+    subject: 'Confirm Sign Up',
+    resetURL
+  })
 
   return res.json({
     success: true,

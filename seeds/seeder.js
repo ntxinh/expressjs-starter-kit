@@ -13,14 +13,14 @@ const User = require('../models/User')
 // password: 123456
 const users = JSON.parse(fs.readFileSync(path.join(__dirname, '/users.json'), 'utf-8'))
 
-async function deleteData () {
+const deleteData = async () => {
   console.log('😢😢 Goodbye Data...')
   await User.remove()
   console.log('Data Deleted. To load sample data, run\n\n\t npm run seed\n\n')
   process.exit()
 }
 
-async function loadData () {
+const loadData = async () => {
   try {
     await User.insertMany(users)
     console.log('👍👍👍👍👍👍👍👍 Done!')
@@ -31,6 +31,7 @@ async function loadData () {
     process.exit()
   }
 }
+
 if (process.argv.includes('--delete')) {
   deleteData()
 } else {

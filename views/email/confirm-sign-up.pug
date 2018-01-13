@@ -1,0 +1,12 @@
+extends email-layout
+
+block content
+  h2 Confirm Sign Up
+  p Hello!
+  p Thank you for registering at my website. Your account is created and must be activated before you can use it.
+  p To activate the account click on following link:
+  +button(resetURL, 'Confirm Sign Up →')
+  p If you can't click the above button please visit #{resetURL}
+  p After activation you may login to my website using your username and password.
+  br
+  p If you didn't request this email, please ignore it.

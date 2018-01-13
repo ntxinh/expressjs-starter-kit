@@ -30,6 +30,7 @@ const userSchema = new Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+  enable: { type: Boolean, default: false },
   hearts: [
     { type: mongoose.Schema.ObjectId, ref: 'Store' }
   ]
@@ -40,7 +41,7 @@ userSchema.virtual('gravatar').get(() => {
   return `https://gravatar.com/avatar/${hash}?s=200`
 })
 
-userSchema.pre('save', async (next) => {
+userSchema.pre('save', async function (next) {
   try {
     if (!this.isModified('password')) {
       return next() // skip it & stop this function from running
