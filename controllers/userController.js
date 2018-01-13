@@ -4,12 +4,15 @@ const bcrypt = require('bcrypt')
 
 const User = mongoose.model('User')
 const mail = require('../handlers/mail')
-const SuccessResponse = require('../common/responses/successResponse')
-const FailResponse = require('../common/responses/failResponse')
+const responses = require('../common/responses')
 
 exports.getUsers = async (req, res) => {
   const users = await User.find()
-  res.json(users)
+  res.json(
+    new responses.SuccessResponse.Builder()
+      .withContent(users)
+      .build()
+  )
 }
 
 exports.postAuthenticate = async (req, res) => {
@@ -22,23 +25,30 @@ exports.postAuthenticate = async (req, res) => {
 
   // Check if user exist
   if (!user) {
-    return res.json({ success: false, message: 'Authentication failed. User not found.' })
+    return res.json(
+      new responses.FailResponse.Builder()
+        .withMessage('Authentication failed. User not found.')
+        .build()
+    )
   }
 
   // Check if password matches
   if (!await bcrypt.compare(password, user.password)) {
-    return res.json({ success: false, message: 'Authentication failed. Wrong password.' })
+    return res.json(
+      new responses.FailResponse.Builder()
+        .withMessage('Authentication failed. Wrong password.')
+        .build()
+    )
   }
 
   // Create a token with only our given payload
   let token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' })
 
   // Return the information including token as JSON
-  return res.json({
-    success: true,
-    message: 'Enjoy your token!',
-    token: `${process.env.JWT_TOKEN_TYPE} ${token}`
-  })
+  return res.json(
+    new responses.SuccessResponse.Builder()
+      .withContent({ token: `${process.env.JWT_TOKEN_TYPE} ${token}` })
+  )
 }
 
 exports.postSignUp = async (req, res) => {
@@ -61,11 +71,11 @@ exports.postSignUp = async (req, res) => {
     resetURL
   })
 
-  return res.json({
-    success: true,
-    message: 'Sign up successfully!',
-    user
-  })
+  return res.json(
+    new responses.SuccessResponse.Builder()
+      .withContent(user)
+      .build()
+  )
 }
 
 exports.getConfirmSignUp = async (req, res) => {
@@ -75,7 +85,7 @@ exports.getConfirmSignUp = async (req, res) => {
   // Check exist token
   if (!token) {
     return res.json(
-      new FailResponse.Builder()
+      new responses.FailResponse.Builder()
         .withMessage('Token Not Found')
         .build()
     )
@@ -93,14 +103,14 @@ exports.getConfirmSignUp = async (req, res) => {
     await user.save()
 
     // Create response
-    let response = new SuccessResponse.Builder()
-      .withContent(user)
-      .build()
-
-    return res.json(response)
+    return res.json(
+      new responses.SuccessResponse.Builder()
+        .withContent(user)
+        .build()
+    )
   } catch (err) {
     return res.json(
-      new FailResponse.Builder()
+      new responses.FailResponse.Builder()
         .withContent(err)
         .withMessage('Token Decode Error')
         .build()
