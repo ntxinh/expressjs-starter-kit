@@ -1,9 +1,11 @@
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const mail = require('../handlers/mail')
 
 const User = mongoose.model('User')
+const mail = require('../handlers/mail')
+const SuccessResponse = require('../common/responses/successResponse')
+const FailResponse = require('../common/responses/failResponse')
 
 exports.getUsers = async (req, res) => {
   const users = await User.find()
@@ -70,27 +72,38 @@ exports.getConfirmSignUp = async (req, res) => {
   // Get input data
   let token = req.query.token
 
-  // Decode token
-  if (token) {
-    // Verifies secret and checks exp
-    try {
-      let decoded = await jwt.verify(token, process.env.JWT_SECRET)
-      let email = decoded.email
-
-      // Enable user
-      let user = await User.findOne({ email })
-      user.enable = true
-      await user.save()
-
-      return res.json({
-        success: true,
-        message: 'Sign up successfully!',
-        user
-      })
-    } catch (err) {
-      return res.json({ error: err })
-    }
+  // Check exist token
+  if (!token) {
+    return res.json(
+      new FailResponse.Builder()
+        .withMessage('Token Not Found')
+        .build()
+    )
   }
 
-  return res.json({ error: 'Not found token' })
+  // Decode token
+  // Verifies secret and checks exp
+  try {
+    let decoded = await jwt.verify(token, process.env.JWT_SECRET)
+    let email = decoded.email
+
+    // Enable user
+    let user = await User.findOne({ email })
+    user.enable = true
+    await user.save()
+
+    // Create response
+    let response = new SuccessResponse.Builder()
+      .withContent(user)
+      .build()
+
+    return res.json(response)
+  } catch (err) {
+    return res.json(
+      new FailResponse.Builder()
+        .withContent(err)
+        .withMessage('Token Decode Error')
+        .build()
+    )
+  }
 }

@@ -4,8 +4,9 @@ exports.getAuthorize = async (req, res, next) => {
   // Check header or url parameters or post parameters for token
   let token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization']
 
+  // Check exist token
   if (!token) {
-    return res.json({ error: 'Not found token' })
+    return res.json({ error: 'Token Not Found' })
   }
 
   // Decode token
