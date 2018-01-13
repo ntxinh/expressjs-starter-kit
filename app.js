@@ -2,11 +2,15 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
 const routes = require('./routes/index')
 
 // create our Express app
 const app = express()
+
+// Enable All CORS Requests
+app.use(cors())
 
 // Takes the raw requests and turns them into usable properties on req.body
 app.use(bodyParser.json())

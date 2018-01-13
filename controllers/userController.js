@@ -32,6 +32,6 @@ exports.postAuthenticate = async (req, res) => {
     return res.json({
         success: true,
         message: 'Enjoy your token!',
-        token: token
+        token: `${process.env.JWT_TOKEN_TYPE} ${token}`
     })
 }
