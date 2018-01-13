@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 const User = mongoose.model('User')
-const mail = require('../handlers/mail')
-const responses = require('../common/responses')
+const mail = require('../common/handlers/mail')
+const responses = require('../common/responses/responses')
 
 exports.getUsers = async (req, res) => {
   const users = await User.find()
