@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const User = mongoose.model('User')
 
@@ -23,7 +24,7 @@ exports.postAuthenticate = async (req, res) => {
     }
 
     // check if password matches
-    if (user.password != password) {
+    if (!await bcrypt.compare(password, user.password)) {
         return res.json({ success: false, message: 'Authentication failed. Wrong password.' })
     }
 

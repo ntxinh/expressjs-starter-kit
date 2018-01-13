@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 mongoose.Promise = global.Promise
 const md5 = require('md5')
 const validator = require('validator')
+const bcrypt = require('bcrypt')
 
 const userSchema = new Schema({
     email: {
@@ -37,6 +38,28 @@ const userSchema = new Schema({
 userSchema.virtual('gravatar').get(function () {
     const hash = md5(this.email)
     return `https://gravatar.com/avatar/${hash}?s=200`
+})
+
+userSchema.pre('save', async function (next) {
+    try {
+
+        if (!this.isModified('password')) {
+            return next() // skip it & stop this function from running
+        }
+
+        // generate a salt
+        const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS))
+
+        // hash the password along with our new salt
+        const hash = await bcrypt.hash(this.password, salt)
+
+        // override the cleartext password with the hashed one
+        this.password = hash
+        
+        return next()
+    } catch (e) {
+        return next(e)
+    }
 })
 
 module.exports = mongoose.model('User', userSchema)
