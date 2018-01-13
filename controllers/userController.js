@@ -63,7 +63,7 @@ exports.postSignUp = async (req, res) => {
 
   // Send them an email with the token
   const tokenConfirm = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '15h' })
-  const resetURL = `http://${req.headers.host}/confirm-sign-up?token=${tokenConfirm}`
+  const resetURL = `http://${req.headers.host}/api/confirm-sign-up?token=${tokenConfirm}`
   await mail.send({
     user,
     filename: 'confirm-sign-up',
