@@ -7,6 +7,7 @@ const User = mongoose.model('User')
 const mail = require('../helpers/mail')
 const { SuccessResponse, FailResponse } = require('../helpers/responseHelpers')
 const { randomPassword } = require('../helpers/stringHelpers')
+const logger = require('../helpers/loggerHelpers')
 
 exports.getUsers = async (req, res) => {
   const users = await User.find()
@@ -23,10 +24,11 @@ exports.postAuthenticate = async (req, res) => {
   let password = req.body.password
 
   // Find the user
-  const user = await User.findOne({ email: email })
+  const user = await User.findOne({ email, enable: true })
 
   // Check if user exist
   if (!user) {
+    logger.warn('Authentication failed. User not found.')
     return res.json(
       new FailResponse.Builder()
         .withMessage('Authentication failed. User not found.')
@@ -36,6 +38,7 @@ exports.postAuthenticate = async (req, res) => {
 
   // Check if password matches
   if (!await bcrypt.compare(password, user.password)) {
+    logger.warn('Authentication failed. Wrong password.')
     return res.json(
       new FailResponse.Builder()
         .withMessage('Authentication failed. Wrong password.')
@@ -45,6 +48,7 @@ exports.postAuthenticate = async (req, res) => {
 
   // Create a token with only our given payload
   let token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' })
+  logger.info(`Auth token created: ${token}`)
 
   // Return the information including token as JSON
   return res.json(
@@ -111,6 +115,7 @@ exports.getConfirmSignUp = async (req, res) => {
         .build()
     )
   } catch (err) {
+    logger.error(`Token Decode Error ${JSON.stringify(err)}`)
     return res.json(
       new FailResponse.Builder()
         .withContent(err)
@@ -192,6 +197,7 @@ exports.getConfirmResetPassword = async (req, res) => {
 
   // Generate new password
   let password = randomPassword()
+  logger.info(`Password was generated: ${password}`)
   user.password = password
   user.resetPasswordToken = undefined
   user.resetPasswordExpires = undefined

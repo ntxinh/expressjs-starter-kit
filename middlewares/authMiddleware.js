@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 const { FailResponse } = require('../helpers/responseHelpers')
+const logger = require('../helpers/loggerHelpers')
 
 exports.getAuthorize = async (req, res, next) => {
   // Check header or url parameters or post parameters for token
@@ -8,6 +9,7 @@ exports.getAuthorize = async (req, res, next) => {
 
   // Check exist token
   if (!token) {
+    logger.warn('Token Not Found')
     return res.json(
       new FailResponse.Builder()
         .withMessage('Token Not Found')
@@ -23,6 +25,7 @@ exports.getAuthorize = async (req, res, next) => {
     req.decoded = decoded
     return next()
   } catch (err) {
+    logger.error(`Token Decode Error ${JSON.stringify(err)}`)
     return res.json(
       new FailResponse.Builder()
         .withContent(err)
