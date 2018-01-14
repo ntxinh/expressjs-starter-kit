@@ -1,7 +1,7 @@
 # STACK
 
 - Node.js / Express.js
-- MongoDb / Mongoose
+- MongoDB / Mongoose
 - JWT
 - [JavaScript Standard Style Guide](https://standardjs.com/)
 
