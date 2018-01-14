@@ -120,11 +120,21 @@ exports.getConfirmSignUp = async (req, res) => {
 }
 
 exports.getTestAxios = async (req, res) => {
+  // Grab some data over an Ajax request
   const xinh = await axios('https://api.github.com/users/nguyentrucxinh')
+  console.log(xinh.data)
+
+  // Many requests should be concurrent - don't slow things down!
+  // Fire off two requests and save their promises
+  const userPromise = axios('https://randomuser.me/api/')
+  const namePromise = axios('https://uinames.com/api/')
+  // Await all three promises to come back and destructure the result into their own variables
+  const [user, name] = await Promise.all([userPromise, namePromise])
+  console.log(user.data, name.data)
 
   return res.json(
     new SuccessResponse.Builder()
-      .withContent(xinh.data)
+      .withContent({ xinh: xinh.data, user: user.data, name: name.data })
       .build()
   )
 }
