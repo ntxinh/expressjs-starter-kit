@@ -8,7 +8,7 @@ const myFormat = printf(info => {
 const logger = createLogger({
   level: process.env.LOG_LEVEL,
   format: combine(
-    label({ label: 'Express.js Starter Kit' }),
+    label({ label: process.env.APP_NAME }),
     timestamp(),
     myFormat
   ),
@@ -29,7 +29,7 @@ const logger = createLogger({
 if (process.env.NODE_ENV !== 'production') {
   logger.add(new transports.Console({
     format: combine(
-      label({ label: 'Express.js Starter Kit' }),
+      label({ label: process.env.APP_NAME }),
       colorize({ property: 'label' }), // colorize({ all: true }),
       timestamp(),
       myFormat
