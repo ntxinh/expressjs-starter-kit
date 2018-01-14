@@ -115,7 +115,7 @@ exports.getConfirmSignUp = async (req, res) => {
         .build()
     )
   } catch (err) {
-    logger.error(`Token Decode Error ${JSON.stringify(err)}`)
+    logger.error(`Token Decode Error ${err}`)
     return res.json(
       new FailResponse.Builder()
         .withContent(err)

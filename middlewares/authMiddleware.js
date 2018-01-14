@@ -25,7 +25,7 @@ exports.getAuthorize = async (req, res, next) => {
     req.decoded = decoded
     return next()
   } catch (err) {
-    logger.error(`Token Decode Error ${JSON.stringify(err)}`)
+    logger.error(`Token Decode Error ${err}`)
     return res.json(
       new FailResponse.Builder()
         .withContent(err)
