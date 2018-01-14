@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const { FailResponse } = require('../helpers/responseHelper')
+const { FailResponse } = require('../helpers/responseHelpers')
 
 exports.getAuthorize = async (req, res, next) => {
   // Check header or url parameters or post parameters for token

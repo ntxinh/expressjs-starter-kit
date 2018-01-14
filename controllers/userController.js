@@ -5,7 +5,8 @@ const axios = require('axios')
 
 const User = mongoose.model('User')
 const mail = require('../helpers/mail')
-const { SuccessResponse, FailResponse } = require('../helpers/responseHelper')
+const { SuccessResponse, FailResponse } = require('../helpers/responseHelpers')
+const { randomPassword } = require('../helpers/stringHelpers')
 
 exports.getUsers = async (req, res) => {
   const users = await User.find()
@@ -63,7 +64,7 @@ exports.postSignUp = async (req, res) => {
   await user.save()
 
   // Send them an email with the token
-  const tokenConfirm = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '15h' })
+  const tokenConfirm = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '15d' })
   const resetURL = `http://${req.headers.host}/api/confirm-sign-up?token=${tokenConfirm}`
   await mail.send({
     user,
@@ -135,6 +136,73 @@ exports.getTestAxios = async (req, res) => {
   return res.json(
     new SuccessResponse.Builder()
       .withContent({ xinh: xinh.data, user: user.data, name: name.data })
+      .build()
+  )
+}
+
+exports.postForgotPassword = async (req, res) => {
+  // Get input data
+  let email = req.body.email
+
+  // 1. See if a user with that email exists
+  const user = await User.findOne({ email })
+  if (!user) {
+    return res.json(
+      new FailResponse.Builder()
+        .withMessage('No account with that email exists.')
+        .build()
+    )
+  }
+  // 2. Set reset tokens and expiry on their account
+  user.resetPasswordToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' })
+  user.resetPasswordExpires = Date.now() + 3600000 // 1 hour from now
+  await user.save()
+  // 3. Send them an email with the token
+  const resetURL = `http://${req.headers.host}/api/confirm-reset-password?token=${user.resetPasswordToken}`
+  await mail.send({
+    user,
+    filename: 'password-reset',
+    subject: 'Password Reset',
+    resetURL
+  })
+
+  return res.json(
+    new SuccessResponse.Builder()
+      .withContent(user)
+      .withMessage('You have been emailed a password reset link.')
+      .build()
+  )
+}
+
+exports.getConfirmResetPassword = async (req, res) => {
+
+  // Get input data
+  let token = req.query.token
+
+  // See if a user with that token exists
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() }
+  })
+  if (!user) {
+    return res.json(
+      new FailResponse.Builder()
+        .withMessage('Password reset is invalid or has expired')
+        .build()
+    )
+  }
+
+  // Generate new password
+  let password = randomPassword()
+  user.password = password
+  user.resetPasswordToken = undefined
+  user.resetPasswordExpires = undefined
+  await user.save()
+
+  return res.json(
+    new SuccessResponse.Builder()
+      .withContent(user)
+      .withMessage(`Your password is: ${password}`)
       .build()
   )
 }
