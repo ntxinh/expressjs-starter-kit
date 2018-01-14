@@ -1,5 +1,5 @@
 const { createLogger, format, transports } = require('winston')
-const { combine, timestamp, label, printf } = format
+const { combine, timestamp, label, printf, colorize } = format
 
 const myFormat = printf(info => {
   return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`
@@ -30,9 +30,11 @@ if (process.env.NODE_ENV !== 'production') {
   logger.add(new transports.Console({
     format: combine(
       label({ label: 'Express.js Starter Kit' }),
+      colorize({ property: 'label' }), // colorize({ all: true }),
       timestamp(),
       myFormat
-    )
+    ),
+    colorize: true
   }))
 }
 
