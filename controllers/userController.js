@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const axios = require('axios')
 
 const User = mongoose.model('User')
-const mail = require('../helpers/mail')
+const mailHelpers = require('../helpers/mailHelpers')
 const { SuccessResponse, FailResponse } = require('../helpers/responseHelpers')
 const { randomPassword } = require('../helpers/stringHelpers')
 const logger = require('../helpers/loggerHelpers')
@@ -70,7 +70,7 @@ exports.postSignUp = async (req, res) => {
   // Send them an email with the token
   const tokenConfirm = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '15d' })
   const resetURL = `http://${req.headers.host}/api/confirm-sign-up?token=${tokenConfirm}`
-  await mail.send({
+  await mailHelpers.send({
     user,
     filename: 'confirm-sign-up',
     subject: 'Confirm Sign Up',
@@ -162,7 +162,7 @@ exports.postForgotPassword = async (req, res) => {
   await user.save()
   // 3. Send them an email with the token
   const resetURL = `http://${req.headers.host}/api/confirm-reset-password?token=${user.resetPasswordToken}`
-  await mail.send({
+  await mailHelpers.send({
     user,
     filename: 'password-reset',
     subject: 'Password Reset',
