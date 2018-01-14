@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const axios = require('axios')
 
 const User = mongoose.model('User')
 const mail = require('../helpers/mail')
@@ -116,4 +117,14 @@ exports.getConfirmSignUp = async (req, res) => {
         .build()
     )
   }
+}
+
+exports.getTestAxios = async (req, res) => {
+  const xinh = await axios('https://api.github.com/users/nguyentrucxinh')
+
+  return res.json(
+    new SuccessResponse.Builder()
+      .withContent(xinh.data)
+      .build()
+  )
 }

@@ -16,5 +16,6 @@ router.use(getAuthorize)
 
 // Protected routes
 router.get('/api/users', catchErrors(userController.getUsers))
+router.get('/api/test-axios', catchErrors(userController.getTestAxios))
 
 module.exports = router
