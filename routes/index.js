@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const { catchErrors } = require('../common/handlers/errorHandlers')
+const { catchErrors } = require('../helpers/errorHandlers')
 const userController = require('../controllers/userController')
 const { getAuthorize } = require('../middlewares/authMiddleware')
 

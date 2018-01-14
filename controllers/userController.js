@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 const User = mongoose.model('User')
-const mail = require('../common/handlers/mail')
-const responses = require('../common/responses/responses')
+const mail = require('../helpers/mail')
+const { SuccessResponse, FailResponse } = require('../helpers/responseHelper')
 
 exports.getUsers = async (req, res) => {
   const users = await User.find()
   res.json(
-    new responses.SuccessResponse.Builder()
+    new SuccessResponse.Builder()
       .withContent(users)
       .build()
   )
@@ -26,7 +26,7 @@ exports.postAuthenticate = async (req, res) => {
   // Check if user exist
   if (!user) {
     return res.json(
-      new responses.FailResponse.Builder()
+      new FailResponse.Builder()
         .withMessage('Authentication failed. User not found.')
         .build()
     )
@@ -35,7 +35,7 @@ exports.postAuthenticate = async (req, res) => {
   // Check if password matches
   if (!await bcrypt.compare(password, user.password)) {
     return res.json(
-      new responses.FailResponse.Builder()
+      new FailResponse.Builder()
         .withMessage('Authentication failed. Wrong password.')
         .build()
     )
@@ -46,7 +46,7 @@ exports.postAuthenticate = async (req, res) => {
 
   // Return the information including token as JSON
   return res.json(
-    new responses.SuccessResponse.Builder()
+    new SuccessResponse.Builder()
       .withContent({ token: `${process.env.JWT_TOKEN_TYPE} ${token}` })
   )
 }
@@ -72,7 +72,7 @@ exports.postSignUp = async (req, res) => {
   })
 
   return res.json(
-    new responses.SuccessResponse.Builder()
+    new SuccessResponse.Builder()
       .withContent(user)
       .build()
   )
@@ -85,7 +85,7 @@ exports.getConfirmSignUp = async (req, res) => {
   // Check exist token
   if (!token) {
     return res.json(
-      new responses.FailResponse.Builder()
+      new FailResponse.Builder()
         .withMessage('Token Not Found')
         .build()
     )
@@ -104,13 +104,13 @@ exports.getConfirmSignUp = async (req, res) => {
 
     // Create response
     return res.json(
-      new responses.SuccessResponse.Builder()
+      new SuccessResponse.Builder()
         .withContent(user)
         .build()
     )
   } catch (err) {
     return res.json(
-      new responses.FailResponse.Builder()
+      new FailResponse.Builder()
         .withContent(err)
         .withMessage('Token Decode Error')
         .build()
