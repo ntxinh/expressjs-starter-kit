@@ -178,7 +178,6 @@ exports.postForgotPassword = async (req, res) => {
 }
 
 exports.getConfirmResetPassword = async (req, res) => {
-
   // Get input data
   let token = req.query.token
 

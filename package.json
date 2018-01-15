@@ -8,7 +8,8 @@
     "start": "node ./start.js",
     "watch": "nodemon ./start.js --ignore public/",
     "seed": "node ./seeds/seeder.js",
-    "seed:delete": "node ./seeds/seeder.js --delete"
+    "seed:delete": "node ./seeds/seeder.js --delete",
+    "lint": "standard"
   },
   "author": "",
   "license": "ISC",
