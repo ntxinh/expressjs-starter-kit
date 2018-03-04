@@ -1,7 +1,6 @@
-const jwt = require('jsonwebtoken')
-
 const { FailResponse } = require('../helpers/responseHelpers')
 const logger = require('../helpers/loggerHelpers')
+const jwtHelpers = require('../helpers/jwtHelpers')
 
 exports.getAuthorize = async (req, res, next) => {
   // Check header or url parameters or post parameters for token
@@ -20,7 +19,7 @@ exports.getAuthorize = async (req, res, next) => {
   // Decode token
   // Verifies secret and checks exp
   try {
-    let decoded = await jwt.verify(token.replace(process.env.JWT_TOKEN_TYPE, '').trim(), process.env.JWT_SECRET)
+    let decoded = await jwtHelpers.decode(token.replace(process.env.JWT_TOKEN_TYPE, '').trim(), process.env.JWT_SECRET)
     // Save decoded to request
     req.decoded = decoded
     return next()
