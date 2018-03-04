@@ -14,7 +14,7 @@ exports.confirmSignUp = async (token) => {
   // Verifies secret and checks exp
   try {
     let decoded = await jwtHelpers.decode(token, process.env.JWT_SECRET)
-    let email = decoded.email
+    let email = decoded.payload.email
 
     // Enable user
     let user = await User.findOne({ email })

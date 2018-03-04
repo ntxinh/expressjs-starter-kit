@@ -9,6 +9,7 @@
     "watch": "nodemon ./start.js --ignore public/",
     "seed": "node ./seeds/seeder.js",
     "seed:delete": "node ./seeds/seeder.js --delete",
+    "seed:refresh": "npm run seed:delete && npm run seed",
     "lint": "standard"
   },
   "author": "",

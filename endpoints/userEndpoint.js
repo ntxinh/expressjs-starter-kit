@@ -30,7 +30,7 @@ exports.postSignUp = async (req, res) => {
   let email = req.body.email
   let password = req.body.password
 
-  const user = await services.users.signUp(name, email, password)
+  const user = await services.users.signUp(name, email, password, req.headers.host)
 
   return res.json(
     new SuccessResponse.Builder()
