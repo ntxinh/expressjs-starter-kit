@@ -27,6 +27,8 @@ npm run watch
 npm run seed
 
 npm run seed:delete
+
+npm run seed:refresh
 ```
 
 - Lint:
@@ -98,6 +100,13 @@ curl -X POST \
 ```bash
 curl -X GET \
   'http://localhost:3000/api/confirm-resest-password?token={{YOUR_TOKEN}}'
+```
+
+- API Get user current:
+```bash
+curl -X GET \
+  http://localhost:3000/api/get-user-current \
+  -H 'authorization: Bearer {{YOUR_TOKEN}}'
 ```
 
 ---
