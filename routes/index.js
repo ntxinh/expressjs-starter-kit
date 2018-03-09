@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const { catchErrors } = require('../helpers/errorHandlers')
-const userEndpoint = require('../endpoints/userEndpoint')
+const userEndpoint = require('../apis/userEndpoint')
 const { getAuthorize } = require('../middlewares/authMiddleware')
 
 // Unprotected routes

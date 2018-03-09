@@ -6,6 +6,7 @@ const { findUsers } = require('./users/findUsers')
 const { forgotPassword } = require('./users/forgotPassword')
 const { signUp } = require('./users/signUp')
 const { testAxios } = require('./users/testAxios')
+const { findUserByEmail } = require('./users/findUserByEmail')
 
 const services = {
   users: {
@@ -16,7 +17,8 @@ const services = {
     findUsers,
     forgotPassword,
     signUp,
-    testAxios
+    testAxios,
+    findUserByEmail
   }
 }
 

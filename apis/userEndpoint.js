@@ -92,13 +92,19 @@ exports.getConfirmResetPassword = async (req, res) => {
 
 exports.getUserCurrent = async (req, res) => {
   // Get token from request
-  const token = (req.headers.authorization).replace(process.env.JWT_TOKEN_TYPE, '').trim()
+  // const token = req.decoded.payload.email
 
-  const user = await services.users.findUserCurrent(token)
+  // const user = await services.users.findUserCurrent(token)
+
+  // return res.json(
+  //   new SuccessResponse.Builder()
+  //     .withContent(user)
+  //     .build()
+  // )
 
   return res.json(
     new SuccessResponse.Builder()
-      .withContent(user)
+      .withContent(req.userCurrent)
       .build()
   )
 }
