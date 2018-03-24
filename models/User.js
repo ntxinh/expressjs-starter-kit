@@ -31,7 +31,7 @@ const userSchema = new Schema({
   resetPasswordToken: String,
   resetPasswordExpires: Date,
   enable: { type: Boolean, default: false }
-})
+}, { timestamps: true, toJSON: { virtuals: true } })
 
 userSchema.virtual('gravatar').get(() => {
   const hash = md5(this.email)
